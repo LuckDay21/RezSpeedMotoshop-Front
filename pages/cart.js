@@ -23,6 +23,7 @@ const Box = styled.div`
 
 const ProductInfoCell = styled.td`
   padding: 10px 0;
+  max-width: 150px;
 `;
 
 const ProductImageBox = styled.div`
@@ -74,10 +75,41 @@ export default function CartPage() {
   function lessOfThisProduct(id) {
     removeProduct(id);
   }
+  async function goToPayment() {
+    const response = await axios.post("/api/checkout", {
+      nama,
+      email,
+      alamat,
+      kota,
+      kodePos,
+      provinsi,
+      nomor,
+      cartProducts,
+    });
+    if (response.data.url) {
+      window.location = response.data.url;
+    }
+  }
   let total = 0;
   for (const productId of cartProducts) {
     const price = products.find((p) => p._id === productId)?.price || 0;
     total += price;
+  }
+
+  if (window.location.href.includes("success")) {
+    return (
+      <>
+        <Header />
+        <Center>
+          <ColumnsWrapper>
+            <Box>
+              <h1>Thanks for your order!</h1>
+              <p>We will email you when your order will be sent.</p>
+            </Box>
+          </ColumnsWrapper>
+        </Center>
+      </>
+    );
   }
   return (
     <>
@@ -138,62 +170,60 @@ export default function CartPage() {
           {!!cartProducts?.length && (
             <Box>
               <h2>Order information</h2>
-              <form method="post" action="/api/checkout">
+              <Input
+                type="text"
+                placeholder="Nama"
+                value={nama}
+                name="nama"
+                onChange={(ev) => setNama(ev.target.value)}
+              />
+              <Input
+                type="text"
+                placeholder="Email"
+                value={email}
+                name="email"
+                onChange={(ev) => setEmail(ev.target.value)}
+              />
+              <Input
+                type="text"
+                placeholder="Alamat"
+                value={alamat}
+                name="alamat"
+                onChange={(ev) => setAlamat(ev.target.value)}
+              />
+              <CityHolder>
                 <Input
                   type="text"
-                  placeholder="Nama"
-                  value={nama}
-                  name="nama"
-                  onChange={(ev) => setNama(ev.target.value)}
+                  placeholder="Kota/Kabupaten"
+                  value={kota}
+                  name="kota"
+                  onChange={(ev) => setKota(ev.target.value)}
                 />
                 <Input
                   type="text"
-                  placeholder="Email"
-                  value={email}
-                  name="email"
-                  onChange={(ev) => setEmail(ev.target.value)}
+                  placeholder="Kode Pos"
+                  value={kodePos}
+                  name="kodePos"
+                  onChange={(ev) => setKodePos(ev.target.value)}
                 />
-                <Input
-                  type="text"
-                  placeholder="Alamat"
-                  value={alamat}
-                  name="alamat"
-                  onChange={(ev) => setAlamat(ev.target.value)}
-                />
-                <CityHolder>
-                  <Input
-                    type="text"
-                    placeholder="Kota/Kabupaten"
-                    value={kota}
-                    name="kota"
-                    onChange={(ev) => setKota(ev.target.value)}
-                  />
-                  <Input
-                    type="text"
-                    placeholder="Kode Pos"
-                    value={kodePos}
-                    name="kodePos"
-                    onChange={(ev) => setKodePos(ev.target.value)}
-                  />
-                </CityHolder>
-                <Input
-                  type="text"
-                  placeholder="Provinsi"
-                  value={provinsi}
-                  name="provinsi"
-                  onChange={(ev) => setProvinsi(ev.target.value)}
-                />
-                <Input
-                  type="text"
-                  placeholder="Nomor Telepon"
-                  value={nomor}
-                  name="nomor"
-                  onChange={(ev) => setNomor(ev.target.value)}
-                />
-                <Button black block type="submit">
-                  Continue to payment
-                </Button>
-              </form>
+              </CityHolder>
+              <Input
+                type="text"
+                placeholder="Provinsi"
+                value={provinsi}
+                name="provinsi"
+                onChange={(ev) => setProvinsi(ev.target.value)}
+              />
+              <Input
+                type="text"
+                placeholder="Nomor Telepon"
+                value={nomor}
+                name="nomor"
+                onChange={(ev) => setNomor(ev.target.value)}
+              />
+              <Button black block onClick={goToPayment}>
+                Continue to payment
+              </Button>
             </Box>
           )}
         </ColumnsWrapper>
