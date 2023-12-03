@@ -26,11 +26,15 @@ const ImageButton = styled.div`
       : `
       border-color: transparent;
   `}
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   padding: 2px;
   cursor: pointer;
   border-radius: 5px;
+  @media screen and (min-width: 768px) {
+    width: 40px;
+    height: 40px;
+  }
 `;
 const BigImageWrapper = styled.div`
   text-align: center;
