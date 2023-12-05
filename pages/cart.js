@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Input from "@/components/Input";
 import Table from "@/components/Table";
 import axios from "axios";
+import { RevealWrapper } from "next-reveal";
 import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 
@@ -131,115 +132,123 @@ export default function CartPage() {
       <Header />
       <Center>
         <ColumnsWrapper>
-          <Box>
-            <h2>Cart</h2>
-            {!cartProducts?.length && <div>Your cart is empty</div>}
-            {products?.length > 0 && (
-              <Table>
-                <thead>
-                  <tr>
-                    <th>Product</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {products.map((product) => (
-                    <tr>
-                      <ProductInfoCell>
-                        <ProductImageBox>
-                          <img src={product.images[0]} alt="" />
-                        </ProductImageBox>
-                        {product.title}
-                      </ProductInfoCell>
-                      <td>
-                        <Button onClick={() => lessOfThisProduct(product._id)}>
-                          -
-                        </Button>
-                        <QuantityLabel>
-                          {
-                            cartProducts.filter((id) => id === product._id)
-                              .length
-                          }
-                        </QuantityLabel>
-                        <Button onClick={() => moreOfThisProduct(product._id)}>
-                          +
-                        </Button>
-                      </td>
-                      <td>
-                        Rp
-                        {cartProducts.filter((id) => id === product._id)
-                          .length * product.price}
-                      </td>
-                    </tr>
-                  ))}
-                  <tr>
-                    <td></td>
-                    <td></td>
-                    <td>Rp{total}</td>
-                  </tr>
-                </tbody>
-              </Table>
-            )}
-          </Box>
-          {!!cartProducts?.length && (
+          <RevealWrapper delay={0}>
             <Box>
-              <h2>Order information</h2>
-              <Input
-                type="text"
-                placeholder="Nama"
-                value={nama}
-                name="nama"
-                onChange={(ev) => setNama(ev.target.value)}
-              />
-              <Input
-                type="text"
-                placeholder="Email"
-                value={email}
-                name="email"
-                onChange={(ev) => setEmail(ev.target.value)}
-              />
-              <Input
-                type="text"
-                placeholder="Alamat"
-                value={alamat}
-                name="alamat"
-                onChange={(ev) => setAlamat(ev.target.value)}
-              />
-              <CityHolder>
-                <Input
-                  type="text"
-                  placeholder="Kota/Kabupaten"
-                  value={kota}
-                  name="kota"
-                  onChange={(ev) => setKota(ev.target.value)}
-                />
-                <Input
-                  type="text"
-                  placeholder="Kode Pos"
-                  value={kodePos}
-                  name="kodePos"
-                  onChange={(ev) => setKodePos(ev.target.value)}
-                />
-              </CityHolder>
-              <Input
-                type="text"
-                placeholder="Provinsi"
-                value={provinsi}
-                name="provinsi"
-                onChange={(ev) => setProvinsi(ev.target.value)}
-              />
-              <Input
-                type="text"
-                placeholder="Nomor Telepon"
-                value={nomor}
-                name="nomor"
-                onChange={(ev) => setNomor(ev.target.value)}
-              />
-              <Button black block onClick={goToPayment}>
-                Continue to payment
-              </Button>
+              <h2>Cart</h2>
+              {!cartProducts?.length && <div>Your cart is empty</div>}
+              {products?.length > 0 && (
+                <Table>
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>Quantity</th>
+                      <th>Price</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {products.map((product) => (
+                      <tr>
+                        <ProductInfoCell>
+                          <ProductImageBox>
+                            <img src={product.images[0]} alt="" />
+                          </ProductImageBox>
+                          {product.title}
+                        </ProductInfoCell>
+                        <td>
+                          <Button
+                            onClick={() => lessOfThisProduct(product._id)}
+                          >
+                            -
+                          </Button>
+                          <QuantityLabel>
+                            {
+                              cartProducts.filter((id) => id === product._id)
+                                .length
+                            }
+                          </QuantityLabel>
+                          <Button
+                            onClick={() => moreOfThisProduct(product._id)}
+                          >
+                            +
+                          </Button>
+                        </td>
+                        <td>
+                          Rp
+                          {cartProducts.filter((id) => id === product._id)
+                            .length * product.price}
+                        </td>
+                      </tr>
+                    ))}
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td>Rp{total}</td>
+                    </tr>
+                  </tbody>
+                </Table>
+              )}
             </Box>
+          </RevealWrapper>
+          {!!cartProducts?.length && (
+            <RevealWrapper delay={100}>
+              <Box>
+                <h2>Order information</h2>
+                <Input
+                  type="text"
+                  placeholder="Nama"
+                  value={nama}
+                  name="nama"
+                  onChange={(ev) => setNama(ev.target.value)}
+                />
+                <Input
+                  type="text"
+                  placeholder="Email"
+                  value={email}
+                  name="email"
+                  onChange={(ev) => setEmail(ev.target.value)}
+                />
+                <Input
+                  type="text"
+                  placeholder="Alamat"
+                  value={alamat}
+                  name="alamat"
+                  onChange={(ev) => setAlamat(ev.target.value)}
+                />
+                <CityHolder>
+                  <Input
+                    type="text"
+                    placeholder="Kota/Kabupaten"
+                    value={kota}
+                    name="kota"
+                    onChange={(ev) => setKota(ev.target.value)}
+                  />
+                  <Input
+                    type="text"
+                    placeholder="Kode Pos"
+                    value={kodePos}
+                    name="kodePos"
+                    onChange={(ev) => setKodePos(ev.target.value)}
+                  />
+                </CityHolder>
+                <Input
+                  type="text"
+                  placeholder="Provinsi"
+                  value={provinsi}
+                  name="provinsi"
+                  onChange={(ev) => setProvinsi(ev.target.value)}
+                />
+                <Input
+                  type="text"
+                  placeholder="Nomor Telepon"
+                  value={nomor}
+                  name="nomor"
+                  onChange={(ev) => setNomor(ev.target.value)}
+                />
+                <Button black block onClick={goToPayment}>
+                  Continue to payment
+                </Button>
+              </Box>
+            </RevealWrapper>
           )}
         </ColumnsWrapper>
       </Center>

@@ -1,15 +1,14 @@
-import Button from "@/components/Button";
-import { CartContext } from "@/components/CartContext";
 import Center from "@/components/Center";
 import Header from "@/components/Header";
-import ProductImages from "@/components/ProductImages";
 import Title from "@/components/Title";
-import WhiteBox from "@/components/WhiteBox";
-import CartIcon from "@/components/icons/CartIcon";
 import { mongooseConnect } from "@/lib/mongoose";
 import { Product } from "@/models/Product";
-import { useContext } from "react";
 import styled from "styled-components";
+import WhiteBox from "@/components/WhiteBox";
+import ProductImages from "@/components/ProductImages";
+import CartIcon from "@/components/icons/CartIcon";
+import FlyingButton from "@/components/FlyingButton";
+// import ProductReviews from "@/components/ProductReviews";
 
 const ColWrapper = styled.div`
   display: grid;
@@ -30,7 +29,6 @@ const Price = styled.span`
 `;
 
 export default function ProductPage({ product }) {
-  const { addProduct } = useContext(CartContext);
   return (
     <>
       <Header />
@@ -44,17 +42,18 @@ export default function ProductPage({ product }) {
             <p>{product.description}</p>
             <PriceRow>
               <div>
-                <Price>Rp{product.price}</Price>
+                <Price>${product.price}</Price>
               </div>
               <div>
-                <Button primary onClick={() => addProduct(product._id)}>
+                <FlyingButton main _id={product._id} src={product.images?.[0]}>
                   <CartIcon />
                   Add to cart
-                </Button>
+                </FlyingButton>
               </div>
             </PriceRow>
           </div>
         </ColWrapper>
+        {/* <ProductReviews product={product} /> */}
       </Center>
     </>
   );

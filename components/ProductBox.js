@@ -1,11 +1,22 @@
 import styled from "styled-components";
-import Button from "./Button";
-import CartIcon from "./icons/CartIcon";
+import Button, { ButtonStyle } from "./Button";
+import CartIcon from "@/components/icons/CartIcon";
 import Link from "next/link";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CartContext } from "./CartContext";
+import { primary } from "@/lib/colors";
+import FlyingButton from "./FlyingButton";
+import HeartOutlineIcon from "./HeartOutlineIcon";
+import HeartSolidIcon from "./HeartSolidIcon";
+import axios from "axios";
 
-const ProductWrapper = styled.div``;
+const ProductWrapper = styled.div`
+  button {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+`;
 
 const WhiteBox = styled(Link)`
   background-color: #fff;
@@ -16,9 +27,11 @@ const WhiteBox = styled(Link)`
   align-items: center;
   justify-content: center;
   border-radius: 10px;
+  position: relative;
   img {
     max-width: 100%;
-    max-height: 120px;
+    max-height: 110px;
+    border-radius: 5px;
   }
 `;
 
@@ -39,34 +52,84 @@ const ProductInfoBox = styled.div`
 `;
 
 const PriceRow = styled.div`
-  display: flex;
+  display: block;
+  @media screen and (min-width: 768px) {
+    display: flex;
+    gap: 5px;
+  }
   align-items: center;
   justify-content: space-between;
   margin-top: 2px;
 `;
 
 const Price = styled.div`
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 400;
+  text-align: right;
+  @media screen and (min-width: 768px) {
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-align: left;
+  }
+`;
+
+const WishlistButton = styled.button`
+  border: 0;
+  width: 40px !important;
+  height: 40px;
+  padding: 10px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: transparent;
+  cursor: pointer;
+  ${(props) =>
+    props.wished
+      ? `
+    color:red;
+  `
+      : `
+    color:black;
+  `}
+  svg {
+    width: 16px;
+  }
 `;
 
 export default function ProductBox({ _id, title, description, price, images }) {
-  const { addProduct } = useContext(CartContext);
   const url = "/product/" + _id;
+  // const [isWished, setIsWished] = useState(wished);
+  // function addToWishlist(ev) {
+  //   ev.preventDefault();
+  //   ev.stopPropagation();
+  //   const nextValue = !isWished;
+  //   if (nextValue === false && onRemoveFromWishlist) {
+  //     onRemoveFromWishlist(_id);
+  //   }
+  //   axios
+  //     .post("/api/wishlist", {
+  //       product: _id,
+  //     })
+  //     .then(() => {});
+  //   setIsWished(nextValue);
+  // }
   return (
     <ProductWrapper>
       <WhiteBox href={url}>
         <div>
-          <img src={images?.[0]} />
+          <WishlistButton>
+            <HeartOutlineIcon />
+          </WishlistButton>
+          <img src={images?.[0]} alt="" />
         </div>
       </WhiteBox>
       <ProductInfoBox>
         <Title href={url}>{title}</Title>
         <PriceRow>
-          <Price>Rp{price}</Price>
-          <Button onClick={() => addProduct(_id)} primary outline>
-            <CartIcon />
-          </Button>
+          <Price>${price}</Price>
+          <FlyingButton _id={_id} src={images?.[0]}>
+            Add to cart
+          </FlyingButton>
         </PriceRow>
       </ProductInfoBox>
     </ProductWrapper>
