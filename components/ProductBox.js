@@ -126,7 +126,7 @@ export default function ProductBox({ _id, title, description, price, images }) {
       <ProductInfoBox>
         <Title href={url}>{title}</Title>
         <PriceRow>
-          <Price>${price}</Price>
+          <Price>Rp{price}</Price>
           <FlyingButton _id={_id} src={images?.[0]}>
             Add to cart
           </FlyingButton>
