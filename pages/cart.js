@@ -84,6 +84,15 @@ export default function CartPage() {
       setIsSuccess(true);
       clearCart();
     }
+    axios.get("/api/address").then((response) => {
+      setNama(response.data?.nama);
+      setEmail(response.data?.email);
+      setAlamat(response.data?.alamat);
+      setKota(response.data?.kota);
+      setKodePos(response.data?.kodePos);
+      setProvinsi(response.data?.provinsi);
+      setNomor(response.data?.nomor);
+    });
   }, []);
   function moreOfThisProduct(id) {
     addProduct(id);

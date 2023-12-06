@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth/mongodb-adapter": "^2.0.7",
     "axios": "^1.6.2",
     "lodash": "^4.17.21",
     "micro": "^10.0.1",
