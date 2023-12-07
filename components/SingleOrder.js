@@ -28,21 +28,23 @@ export default function SingleOrder({ line_items, createdAt, ...rest }) {
   return (
     <StyledOrder>
       <div>
-        <time>{new Date(createdAt).toLocaleString("sv-SE")}</time>
+        <time>{new Date(createdAt).toLocaleString("id-ID")}</time>
         <Address>
-          {rest.name}
+          {rest.nama}
           <br />
           {rest.email}
           <br />
-          {rest.streetAddress}
+          {rest.alamat}
           <br />
-          {rest.postalCode} {rest.city}, {rest.country}
+          {rest.kota} {rest.kodePos}, {rest.provinsi}
+          <br />
+          {rest.nomor}
         </Address>
       </div>
       <div>
         {line_items.map((item) => (
           <ProductRow>
-            <span>{item.quantity} x </span>
+            <span>{item.quantity}x </span>
             {item.price_data.product_data.name}
           </ProductRow>
         ))}

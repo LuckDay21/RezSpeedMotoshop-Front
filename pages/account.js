@@ -69,7 +69,7 @@ export default function AccountPage() {
     }
     setAddressLoaded(false);
     setWishlistLoaded(false);
-    // setOrderLoaded(false);
+    setOrderLoaded(false);
     axios.get("/api/address").then((response) => {
       setNama(response.data?.nama);
       setEmail(response.data?.email);
@@ -84,10 +84,10 @@ export default function AccountPage() {
       setWishedProducts(response.data.map((wp) => wp.product));
       setWishlistLoaded(true);
     });
-    // axios.get("/api/orders").then((response) => {
-    //   setOrders(response.data);
-    //   setOrderLoaded(true);
-    // });
+    axios.get("/api/orders").then((response) => {
+      setOrders(response.data);
+      setOrderLoaded(true);
+    });
   }, [session]);
   function productRemovedFromWishlist(idToRemove) {
     setWishedProducts((products) => {
@@ -102,32 +102,7 @@ export default function AccountPage() {
           <div>
             <RevealWrapper delay={0}>
               <WhiteBox>
-                <h2>Wishlist</h2>
-                {!wishlistLoaded && <Spinner fullWidth={true} />}
-                {wishlistLoaded && (
-                  <>
-                    <WishedProductsGrid>
-                      {wishedProducts.length > 0 &&
-                        wishedProducts.map((wp) => (
-                          <ProductBox
-                            key={wp._id}
-                            {...wp}
-                            wished={true}
-                            onRemoveFromWishlist={productRemovedFromWishlist}
-                          />
-                        ))}
-                    </WishedProductsGrid>
-                    {wishedProducts.length === 0 && (
-                      <>
-                        {session && <p>Your wishlist is empty</p>}
-                        {!session && (
-                          <p>Login to add products to your wishlist</p>
-                        )}
-                      </>
-                    )}
-                  </>
-                )}
-                {/* <Tabs
+                <Tabs
                   tabs={["Orders", "Wishlist"]}
                   active={activeTab}
                   onChange={setActiveTab}
@@ -146,8 +121,34 @@ export default function AccountPage() {
                 )}
                 {activeTab === "Wishlist" && (
                   <>
+                    {!wishlistLoaded && <Spinner fullWidth={true} />}
+                    {wishlistLoaded && (
+                      <>
+                        <WishedProductsGrid>
+                          {wishedProducts.length > 0 &&
+                            wishedProducts.map((wp) => (
+                              <ProductBox
+                                key={wp._id}
+                                {...wp}
+                                wished={true}
+                                onRemoveFromWishlist={
+                                  productRemovedFromWishlist
+                                }
+                              />
+                            ))}
+                        </WishedProductsGrid>
+                        {wishedProducts.length === 0 && (
+                          <>
+                            {session && <p>Your wishlist is empty</p>}
+                            {!session && (
+                              <p>Login to add products to your wishlist</p>
+                            )}
+                          </>
+                        )}
+                      </>
+                    )}
                   </>
-                )} */}
+                )}
               </WhiteBox>
             </RevealWrapper>
           </div>
