@@ -6,8 +6,8 @@ import { useContext, useEffect, useState } from "react";
 import { CartContext } from "./CartContext";
 import { primary } from "@/lib/colors";
 import FlyingButton from "./FlyingButton";
-import HeartOutlineIcon from "./HeartOutlineIcon";
-import HeartSolidIcon from "./HeartSolidIcon";
+import HeartOutlineIcon from "./icons/HeartOutlineIcon";
+import HeartSolidIcon from "./icons/HeartSolidIcon";
 import axios from "axios";
 
 const ProductWrapper = styled.div`
@@ -96,29 +96,37 @@ const WishlistButton = styled.button`
   }
 `;
 
-export default function ProductBox({ _id, title, description, price, images }) {
+export default function ProductBox({
+  _id,
+  title,
+  description,
+  price,
+  images,
+  wished = false,
+  onRemoveFromWishlist = () => {},
+}) {
   const url = "/product/" + _id;
-  // const [isWished, setIsWished] = useState(wished);
-  // function addToWishlist(ev) {
-  //   ev.preventDefault();
-  //   ev.stopPropagation();
-  //   const nextValue = !isWished;
-  //   if (nextValue === false && onRemoveFromWishlist) {
-  //     onRemoveFromWishlist(_id);
-  //   }
-  //   axios
-  //     .post("/api/wishlist", {
-  //       product: _id,
-  //     })
-  //     .then(() => {});
-  //   setIsWished(nextValue);
-  // }
+  const [isWished, setIsWished] = useState(wished);
+  function addToWishlist(ev) {
+    ev.preventDefault();
+    ev.stopPropagation();
+    const nextValue = !isWished;
+    if (nextValue === false && onRemoveFromWishlist) {
+      onRemoveFromWishlist(_id);
+    }
+    axios
+      .post("/api/wishlist", {
+        product: _id,
+      })
+      .then(() => {});
+    setIsWished(nextValue);
+  }
   return (
     <ProductWrapper>
       <WhiteBox href={url}>
         <div>
-          <WishlistButton>
-            <HeartOutlineIcon />
+          <WishlistButton wished={isWished} onClick={addToWishlist}>
+            {isWished ? <HeartSolidIcon /> : <HeartOutlineIcon />}
           </WishlistButton>
           <img src={images?.[0]} alt="" />
         </div>

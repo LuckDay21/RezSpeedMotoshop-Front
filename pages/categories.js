@@ -7,9 +7,9 @@ import styled from "styled-components";
 import Link from "next/link";
 import { RevealWrapper } from "next-reveal";
 import { mongooseConnect } from "@/lib/mongoose";
-// import {getServerSession} from "next-auth";
-// import {authOptions} from "@/pages/api/auth/[...nextauth]";
-// import {WishedProduct} from "@/models/WishedProduct";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { WishedProduct } from "@/models/WishedProduct";
 
 const CategoryGrid = styled.div`
   display: grid;
@@ -50,7 +50,11 @@ const ShowAllSquare = styled(Link)`
   text-decoration: none;
 `;
 
-export default function CategoriesPage({ mainCategories, categoriesProducts }) {
+export default function CategoriesPage({
+  mainCategories,
+  categoriesProducts,
+  wishedProducts = [],
+}) {
   return (
     <>
       <Header />
@@ -66,7 +70,7 @@ export default function CategoriesPage({ mainCategories, categoriesProducts }) {
             <CategoryGrid>
               {categoriesProducts[cat._id].map((p, index) => (
                 <RevealWrapper delay={index * 50}>
-                  <ProductBox {...p} />
+                  <ProductBox {...p} wished={wishedProducts.includes(p._id)} />
                 </RevealWrapper>
               ))}
               <RevealWrapper delay={categoriesProducts[cat._id].length * 50}>
@@ -102,10 +106,19 @@ export async function getServerSideProps(ctx) {
     categoriesProducts[mainCat._id] = products;
   }
 
+  const session = await getServerSession(ctx.req, ctx.res, authOptions);
+  const wishedProducts = session?.user
+    ? await WishedProduct.find({
+        userEmail: session?.user.email,
+        product: allFetchedProductsId,
+      })
+    : [];
+
   return {
     props: {
       mainCategories: JSON.parse(JSON.stringify(mainCategories)),
       categoriesProducts: JSON.parse(JSON.stringify(categoriesProducts)),
+      wishedProducts: wishedProducts.map((i) => i.product.toString()),
     },
   };
 }

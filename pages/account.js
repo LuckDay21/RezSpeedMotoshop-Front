@@ -64,11 +64,11 @@ export default function AccountPage() {
     axios.put("/api/address", data);
   }
   useEffect(() => {
-    // if (!session) {
-    //   return;
-    // }
-    // setAddressLoaded(false);
-    // setWishlistLoaded(false);
+    if (!session) {
+      return;
+    }
+    setAddressLoaded(false);
+    setWishlistLoaded(false);
     // setOrderLoaded(false);
     axios.get("/api/address").then((response) => {
       setNama(response.data?.nama);
@@ -80,15 +80,15 @@ export default function AccountPage() {
       setNomor(response.data?.nomor);
       setAddressLoaded(true);
     });
-    //   axios.get("/api/wishlist").then((response) => {
-    //     setWishedProducts(response.data.map((wp) => wp.product));
-    //     setWishlistLoaded(true);
-    //   });
+    axios.get("/api/wishlist").then((response) => {
+      setWishedProducts(response.data.map((wp) => wp.product));
+      setWishlistLoaded(true);
+    });
     // axios.get("/api/orders").then((response) => {
     //   setOrders(response.data);
     //   setOrderLoaded(true);
     // });
-  }, []);
+  }, [session]);
   function productRemovedFromWishlist(idToRemove) {
     setWishedProducts((products) => {
       return [...products.filter((p) => p._id.toString() !== idToRemove)];
@@ -103,6 +103,30 @@ export default function AccountPage() {
             <RevealWrapper delay={0}>
               <WhiteBox>
                 <h2>Wishlist</h2>
+                {!wishlistLoaded && <Spinner fullWidth={true} />}
+                {wishlistLoaded && (
+                  <>
+                    <WishedProductsGrid>
+                      {wishedProducts.length > 0 &&
+                        wishedProducts.map((wp) => (
+                          <ProductBox
+                            key={wp._id}
+                            {...wp}
+                            wished={true}
+                            onRemoveFromWishlist={productRemovedFromWishlist}
+                          />
+                        ))}
+                    </WishedProductsGrid>
+                    {wishedProducts.length === 0 && (
+                      <>
+                        {session && <p>Your wishlist is empty</p>}
+                        {!session && (
+                          <p>Login to add products to your wishlist</p>
+                        )}
+                      </>
+                    )}
+                  </>
+                )}
                 {/* <Tabs
                   tabs={["Orders", "Wishlist"]}
                   active={activeTab}
@@ -122,32 +146,6 @@ export default function AccountPage() {
                 )}
                 {activeTab === "Wishlist" && (
                   <>
-                    {!wishlistLoaded && <Spinner fullWidth={true} />}
-                    {wishlistLoaded && (
-                      <>
-                        <WishedProductsGrid>
-                          {wishedProducts.length > 0 &&
-                            wishedProducts.map((wp) => (
-                              <ProductBox
-                                key={wp._id}
-                                {...wp}
-                                wished={true}
-                                onRemoveFromWishlist={
-                                  productRemovedFromWishlist
-                                }
-                              />
-                            ))}
-                        </WishedProductsGrid>
-                        {wishedProducts.length === 0 && (
-                          <>
-                            {session && <p>Your wishlist is empty</p>}
-                            {!session && (
-                              <p>Login to add products to your wishlist</p>
-                            )}
-                          </>
-                        )}
-                      </>
-                    )}
                   </>
                 )} */}
               </WhiteBox>
@@ -156,9 +154,9 @@ export default function AccountPage() {
           <div>
             <RevealWrapper delay={100}>
               <WhiteBox>
-                <h2>Account details</h2>
+                <h2>{session ? "Account details" : "Login"}</h2>
                 {!addressLoaded && <Spinner fullWidth={true} />}
-                {addressLoaded && (
+                {addressLoaded && session && (
                   <>
                     <Input
                       type="text"
