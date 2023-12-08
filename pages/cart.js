@@ -18,6 +18,21 @@ const ColumnsWrapper = styled.div`
   }
   gap: 40px;
   margin-top: 40px;
+  margin-bottom: 40px;
+  table thead tr th:nth-child(3),
+  table tbody tr td:nth-child(3),
+  table tbody tr.subtotal td:nth-child(2) {
+    text-align: right;
+  }
+  table tr.subtotal td {
+    padding: 15px 0;
+  }
+  table tbody tr.subtotal td:nth-child(2) {
+    font-size: 1.4rem;
+  }
+  tr.total td {
+    font-weight: bold;
+  }
 `;
 
 const Box = styled.div`
@@ -29,6 +44,9 @@ const Box = styled.div`
 const ProductInfoCell = styled.td`
   padding: 10px 0;
   max-width: 150px;
+  button {
+    padding: 0 !important;
+  }
 `;
 
 const ProductImageBox = styled.div`
@@ -48,7 +66,12 @@ const ProductImageBox = styled.div`
 `;
 
 const QuantityLabel = styled.span`
-  padding: 0 3px;
+  padding: 0 15px;
+  display: block;
+  @media screen and (min-width: 768px) {
+    display: inline-block;
+    padding: 0 6px;
+  }
 `;
 
 const CityHolder = styled.div`
@@ -69,6 +92,7 @@ export default function CartPage() {
   const [provinsi, setProvinsi] = useState("");
   const [nomor, setNomor] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
+  const [shippingFee, setShippingFee] = useState(null);
   useEffect(() => {
     if (cartProducts.length > 0) {
       axios.post("/api/cart", { ids: cartProducts }).then((response) => {
@@ -86,6 +110,9 @@ export default function CartPage() {
       setIsSuccess(true);
       clearCart();
     }
+    axios.get("/api/settings?name=shippingFee").then((res) => {
+      setShippingFee(res.data.value);
+    });
   }, []);
   useEffect(() => {
     if (!session) {
@@ -122,10 +149,10 @@ export default function CartPage() {
       window.location = response.data.url;
     }
   }
-  let total = 0;
+  let productsTotal = 0;
   for (const productId of cartProducts) {
     const price = products.find((p) => p._id === productId)?.price || 0;
-    total += price;
+    productsTotal += price;
   }
 
   if (isSuccess) {
@@ -195,10 +222,17 @@ export default function CartPage() {
                         </td>
                       </tr>
                     ))}
-                    <tr>
-                      <td></td>
-                      <td></td>
-                      <td>Rp{total}</td>
+                    <tr className="subtotal">
+                      <td colSpan={2}>Products</td>
+                      <td>Rp{productsTotal}</td>
+                    </tr>
+                    <tr className="subtotal">
+                      <td colSpan={2}>Shipping</td>
+                      <td>Rp{shippingFee}</td>
+                    </tr>
+                    <tr className="subtotal total">
+                      <td colSpan={2}>Total</td>
+                      <td>Rp{productsTotal + parseInt(shippingFee || 0)}</td>
                     </tr>
                   </tbody>
                 </Table>
